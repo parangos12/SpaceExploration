@@ -1,9 +1,7 @@
 package edu.spacexploration.udea.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.annotations.SerializedName;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CrewMember {
 
   @SerializedName("_id")
@@ -35,6 +33,22 @@ public class CrewMember {
 
   @SerializedName("Salary")
   private Float salary;
+
+  public CrewMember(String id, String name, String surname, Integer age, String gender,
+                    Integer familyId, String civilStatus, Integer children, Integer tripsAchieved,
+                    Float salary) {
+    this.id = id;
+    this.name = name;
+    this.surname = surname;
+    this.age = age;
+    this.gender = gender;
+    this.familyId = familyId;
+    this.civilStatus = civilStatus;
+    this.children = children;
+    this.tripsAchieved = tripsAchieved;
+    this.salary = salary;
+  }
+
 
   @Override
   public String toString() {

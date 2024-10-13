@@ -1,7 +1,6 @@
 package edu.spacexploration.udea.module1;
 
 import edu.spacexploration.udea.entities.CrewMember;
-import edu.spacexploration.udea.utils.ChainedHashTable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,6 @@ public class Spaceship {
         if (crewMember.getAge() < MIN_AGE) {
           underageCrewMembers.add(crewMember);
           break;
-          // crewMember = handleUnderageCrewMember(crewMember, cabinId);
         }
         if (insertCrewMember(crewMember, cabinId)) {
           break;
@@ -50,28 +48,32 @@ public class Spaceship {
       Integer familyId = underageCrewMember.getFamilyId();
       for (int cabinId = 0; cabinId < spaceshipMaxCabins; cabinId++) {
         //Tiene q haber un adulto de la misma familia, este es el unico requisito. Acá habria ese condicional
-        //Hay que intercambiar a un familiar de distinta familia que no tenga menores a cargo.
+        //Hay que intercambiar a un familiar de distinta familia sin menores.
 
+        if(cabins.isThereAdultFromSameFamily(cabinId, familyId)){
+          CrewMember adultDifferentFamilyWithoutMinor = cabins.findAdultDifferentFamilyWithoutMinor(cabinId, familyId);
+          if(adultDifferentFamilyWithoutMinor!=null){
+            //adultCrewMember = cabins.findAdultDifferentFamily(cabinId, familyId);
+            cabins.getCrewMembers(cabinId).remove(adultDifferentFamilyWithoutMinor);
+            insertCrewMember(underageCrewMember, cabinId);
+            insertCrewMemberInAvailableCabin(adultDifferentFamilyWithoutMinor);
+            break;
+          }
+          if(cabins.areAllAdultsMembersSameFamily(cabinId, familyId)){
+            adultCrewMember = cabins.findFirstAdultCrewMember(cabinId);
+            cabins.getCrewMembers(cabinId).remove(adultCrewMember);
+            insertCrewMember(underageCrewMember, cabinId);
+            insertCrewMemberInAvailableCabin(adultCrewMember);
+            break;
+          }
       }
     }
-  }
+  }}
 
   private void insertCrewMemberInAvailableCabin(CrewMember crewMember) {
     Integer cabinId = cabins.findAvailableCabin(cabinSize);
     insertCrewMember(crewMember, cabinId);
   }
-
-  //  private CrewMember insertUnderageCrewMember(CrewMember underageCrewMember, Integer cabinId) {
-  ////    if(cabins.findFirstUnderageCrewMember(cabinId)!=null){
-  ////      return underageCrewMember;
-  ////    }
-  //    // 1. Find one adult crew member in the cabin
-  //    CrewMember adultCrewMember = cabins.findFirstAdultCrewMember(cabinId);
-  //    cabins.getCrewMembers(cabinId).remove(adultCrewMember);
-  //    insertCrewMember(underageCrewMember, cabinId);
-  //    //2. If not adult is found, continue with next cabin with same underage crew member
-  //    return adultCrewMember;
-  //  }
 
   private boolean insertCrewMember(CrewMember crewMember, Integer cabinId) {
     Integer sizeCrewMembersInCabin = cabins.getCrewMembers(cabinId).size();

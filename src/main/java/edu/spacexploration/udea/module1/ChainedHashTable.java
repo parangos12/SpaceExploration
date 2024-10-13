@@ -1,4 +1,4 @@
-package edu.spacexploration.udea.utils;
+package edu.spacexploration.udea.module1;
 
 import edu.spacexploration.udea.entities.CrewMember;
 import java.util.ArrayList;
@@ -107,16 +107,6 @@ public class ChainedHashTable {
     return sameFamily && differentFamily;
   }
 
-  //  public boolean isThereAdultSameFamilyInCabin(Integer cabinId,Integer familyId) {
-  //    List<CrewMember> crewMembersInCabin = table.get(cabinId);
-  //    for (CrewMember crewMember : crewMembersInCabin) {
-  //      if (crewMember.getFamilyId().equals(familyId) && crewMember.getAge() >= 18) {
-  //        return true;
-  //      }
-  //    }
-  //    return false;
-  //  }
-
   public void display() {
     for (int i = 0; i < table.size(); i++) {
       List<String> crewMembers =
@@ -133,17 +123,6 @@ public class ChainedHashTable {
 
       System.out.println("Cabin " + i + ": " + crewMembers);
     }
-  }
-  public Integer findCabinWithAdultFromSameFamily(Integer familyId) {
-    for (int cabinId = 0; cabinId < table.size(); cabinId++) {
-      List<CrewMember> crewMembersInCabin = table.get(cabinId);
-      for (CrewMember crewMember : crewMembersInCabin) {
-        if (Objects.equals(crewMember.getFamilyId(), familyId) && crewMember.getAge() >= 18) {
-          return cabinId;
-        }
-      }
-    }
-    return -1; // No se encontró ninguna cabina adecuada
   }
 
   public void countCrewMembers() {
