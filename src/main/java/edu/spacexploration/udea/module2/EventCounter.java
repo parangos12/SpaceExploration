@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class EventCounter {
 
-    // Método para contar eventos específicos
+    // Método para contar eventos específicos,2
     public static int countEvents(String jsonFilePath, String eventType) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
