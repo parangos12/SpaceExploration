@@ -1,47 +1,46 @@
 package edu.spacexploration.udea.module2;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 public class PopulationEstimation {
 
-    public static void main(String[] args) {
-        // Total population of crew members (example)
-        int totalPopulation = 1000; // Total crew members
-        List<Boolean> crewMembers = new ArrayList<>(totalPopulation);
+    // Método para estimar el número de sobrevivientes usando muestreo
+    public static int estimateSurvivingCrew(String jsonFilePath, int sampleSize) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
+            JsonNode crewArray = rootNode.get("crewMembers");
 
-        // Simulate the survival status of crew members
-        Random random = new Random();
-        for (int i = 0; i < totalPopulation; i++) {
-            // Assuming a 70% survival rate for this example
-            crewMembers.add(random.nextDouble() < 0.7);
-        }
-
-        // Size of the sample we will take
-        int sampleSize = 100; // Size of the sample for estimation
-
-        // Estimate survivors using simple random sampling
-        int estimatedSurvivors = estimateSurvivors(crewMembers, sampleSize);
-        System.out.println("Estimated number of surviving crew members: " + estimatedSurvivors);
-    }
-
-    public static int estimateSurvivors(List<Boolean> crewMembers, int sampleSize) {
-        Random random = new Random();
-        int survivorsInSample = 0;
-
-        // Simple Random Sampling
-        for (int i = 0; i < sampleSize; i++) {
-            int index = random.nextInt(crewMembers.size());
-            if (crewMembers.get(index)) {
-                survivorsInSample++;
+            if (crewArray == null || crewArray.size() == 0) {
+                return 0;
             }
+
+            Random random = new Random();
+            int totalSurvivedInSample = 0;
+            int totalMembers = crewArray.size();
+
+            // Muestreo aleatorio
+            for (int i = 0; i < sampleSize; i++) {
+                int randomIndex = random.nextInt(totalMembers);
+                JsonNode crewMember = crewArray.get(randomIndex);
+                boolean survived = crewMember.get("survived").asBoolean();
+
+                if (survived) {
+                    totalSurvivedInSample++;
+                }
+            }
+
+            // Estimación basada en el muestreo
+            double survivalRate = (double) totalSurvivedInSample / sampleSize;
+            return (int) (survivalRate * totalMembers);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
         }
-
-        // Estimate total survivors based on sample
-        double survivalRate = (double) survivorsInSample / sampleSize;
-        int estimatedSurvivors = (int) (survivalRate * crewMembers.size());
-
-        return estimatedSurvivors;
     }
 }
